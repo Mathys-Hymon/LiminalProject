@@ -5,9 +5,6 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    private PlayerMovement movement;
-    private MouseLook cameraMovement;
-
     private PlayerInput controls;
     private PlayerInput.GroundMovementActions groundMovement;
 
@@ -16,21 +13,25 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        movement = GetComponent<PlayerMovement>();
-        cameraMovement = GetComponent<MouseLook>();
         controls = new PlayerInput();
         groundMovement = controls.GroundMovement;
 
         groundMovement.HorizontalMovement.performed += ctx => horizontalInput = ctx.ReadValue<Vector2>();
-        groundMovement.Jump.performed += _ => movement.OnJumpPressed();
+        groundMovement.Jump.performed += _ => PlayerMovement.instance.OnJumpPressed();
         groundMovement.MouseX.performed += ctx => mouseInput.x = ctx.ReadValue<float>();
         groundMovement.MouseY.performed += ctx => mouseInput.y = ctx.ReadValue<float>();
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     private void Update()
     {
-        movement.ReceiveInput(horizontalInput);
-        cameraMovement.ReceiveInput(mouseInput);
+        PlayerMovement.instance.ReceiveInput(horizontalInput);
+        MouseLook.instance.ReceiveInput(mouseInput);
     }
 
     private void OnEnable()

@@ -1,32 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class MouseLook : MonoBehaviour
 {
+    public static MouseLook instance;
+
+
     [SerializeField] private float sensitivity = 10f;
     [SerializeField] private float xClamp = 85f;
-    private Transform playerCamera;
-    private float mouseX, mouseY, xRotation;
+    private float xRotation;
+    private Vector2 input;
 
     private void Start()
     {
-        playerCamera = transform.GetChild(0).transform;
+        instance = this;
+    }
+
+    public void CanInteract(bool canInteract)
+    {
+
     }
 
     public void ReceiveInput (Vector2 mouseInput)
     {
-        mouseX = (mouseInput.x * sensitivity);
-        mouseY = (mouseInput.y * sensitivity);
+        input = mouseInput * sensitivity;
     }
 
     private void Update()
     {
-        transform.Rotate(Vector3.up * mouseX * Time.deltaTime);
-        xRotation -= mouseY * Time.deltaTime;
+
+        xRotation -= ((input.y / 10) * sensitivity);
         xRotation = Mathf.Clamp(xRotation, -xClamp, xClamp);
-        Vector3 targetRotation = transform.eulerAngles;
-        targetRotation.x = xRotation;
-        playerCamera.eulerAngles = targetRotation;
+        var VerticalRot = Quaternion.AngleAxis(xRotation, Vector3.right);
+        transform.localRotation = VerticalRot;
+
+        PlayerMovement.instance.transform.Rotate((Vector3.up * (input.x/ 10) * sensitivity));
     }
 }
