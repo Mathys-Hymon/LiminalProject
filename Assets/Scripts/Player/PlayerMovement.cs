@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     {
         instance = this;
         controller = GetComponent<CharacterController>();
+        PlayerPrefs.SetInt("language", 0);
 
     }
     private void Update()

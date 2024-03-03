@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b174fc0d9aacc34469950be0794e11cb, type: 3}
+  m_Name: Dialogue 1
+  m_EditorClassIdentifier: 
+  dialogueEN: Just so you know, I'll be taking a shot every time you die. Please
+    try to keep me out of the hospital
+  dialogueFR: "Juste pour te pr\xE9venir, je prend un shot a chaque fois que tu meurs.
+    S'il te plait \xE9vite de m'envoyer a l'hopital"
+  voice: {fileID: 8300000, guid: 98f3acc49f9c5154baba9d64883cbdb5, type: 3}
+  delay: 0

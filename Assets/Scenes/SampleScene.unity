@@ -1902,22 +1902,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e7777e2e2edb624b81ee664d09a7df6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogues:
-  - Just so you know, I'll be taking a shot every time you die. Please try to keep
-    me out of the hospital
-  - Can anyone truely die, in real life I mean. I, wait, okay yes I've answered my
-    own question
-  - '[laughter] Gotcha ! Oh come on, did you actually think you had a loving wife
-    ? They''d want to commit their life to you '
-  audioClip:
-  - {fileID: 8300000, guid: 98f3acc49f9c5154baba9d64883cbdb5, type: 3}
-  - {fileID: 8300000, guid: 36716b87d9ce6364b89107152f5cb306, type: 3}
-  - {fileID: 8300000, guid: 73a907cbcc6e3454385ca3a921c6e095, type: 3}
-  textDelay:
-  - 2
-  - 5
-  - 3
-  inboxDialogue: 0
+  dialogue:
+  - {fileID: 11400000, guid: e015bc69cf676d745a7f409c40c8070d, type: 2}
+  - {fileID: 11400000, guid: f9567dfc1fbe35d428c2bb6f265509b0, type: 2}
+  inBoxDialogue: 0
+  exitTextBasedOnDuration: []
+  duration: []
 --- !u!1 &1926070800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1948,17 +1938,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e7777e2e2edb624b81ee664d09a7df6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogues:
-  - What ? no no no no no this will ruin our family-friendly story
-  - We'll package it up with the original game and we'll put it on consoles and everyone
-    will buy it again because they're suckers
-  audioClip:
-  - {fileID: 8300000, guid: 26af203e0ef716e4face18d54001f816, type: 3}
-  - {fileID: 8300000, guid: 19795a4894eced8488b9860708aff23e, type: 3}
-  textDelay:
-  - 0
-  - 10
-  inboxDialogue: 0
+  dialogue: []
+  inBoxDialogue: 0
+  exitTextBasedOnDuration: []
+  duration: []
 --- !u!65 &1926070802
 BoxCollider:
   m_ObjectHideFlags: 0

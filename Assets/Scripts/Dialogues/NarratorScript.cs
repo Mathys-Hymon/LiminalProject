@@ -10,13 +10,10 @@ public class NarratorScript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text;
     private AudioSource sourceRef;
     private int dialogueIndex;
-    private float delay;
-    private string displayedDialogue;
+    private float delay, typingSpeed;
+    List<string> messages = new List<string>();
 
-    private float[] dialogueDelay;
-    private string[] message;
-    private AudioClip[] voice;
-    private float typingSpeed;
+    private Dialogue[] dialoguesref;
     private void Start()
     {
         instance = this;
@@ -24,40 +21,63 @@ public class NarratorScript : MonoBehaviour
         sourceRef = GetComponent<AudioSource>();
     }
 
-    public void Dialogue(string[] _message, AudioClip[] _voice, float[] _delay)
+    public void Dialogue(Dialogue[] _dialogue)
     {
         dialogueIndex = 0;
-        message = _message;
-        voice = _voice;
-        dialogueDelay = _delay;
+        dialoguesref = _dialogue;
+
+        switch (PlayerPrefs.GetInt("language"))
+        {
+            default:
+                for (int i = 0; i < dialoguesref.Length; i++)
+                {
+                    messages.Add(dialoguesref[i].dialogueEN);
+                }
+                break;
+
+
+            case 0: //anglais
+                for (int i = 0; i < dialoguesref.Length; i++)
+                {
+                    messages.Add(dialoguesref[i].dialogueEN);
+                }
+                break;
+
+            case 1: //francais
+                for (int i = 0; i < dialoguesref.Length; i++)
+                {
+                    messages.Add(dialoguesref[i].dialogueFR);
+                }
+                break;
+        }
     }
 
     private void Update()
     {
-        if(message != null)
+        if(dialoguesref != null)
         {
-            if (!sourceRef.isPlaying && dialogueIndex <= message.Length - 1)
+            if (!sourceRef.isPlaying && dialogueIndex <= messages.Count - 1)
             {
-                if (delay < dialogueDelay[dialogueIndex])
+                if (delay < dialoguesref[dialogueIndex].delay)
                 {
                     delay += Time.deltaTime;
                 }
                 else
                 {
-                    typingSpeed = voice[dialogueIndex].length / message[dialogueIndex].Length;
-                    print(message[dialogueIndex]);
+                    typingSpeed = dialoguesref[dialogueIndex].voice.length / messages[dialogueIndex].Length;
+                    print(messages[dialogueIndex]);
                     delay = 0;
 
-                    StartCoroutine(DisplayDialogue(message[dialogueIndex]));
-                    sourceRef.clip = voice[dialogueIndex];
+                    StartCoroutine(DisplayDialogue(messages[dialogueIndex]));
+                    sourceRef.clip = dialoguesref[dialogueIndex].voice;
                     sourceRef.Play();
                     dialogueIndex++;
                 }
 
             }
-            else if (dialogueIndex > message.Length - 1)
+            else if (dialogueIndex > messages.Count - 1)
             {
-                message = null;
+                dialoguesref = null;
                 dialogueIndex = 0;
             }
         }
@@ -75,7 +95,7 @@ public class NarratorScript : MonoBehaviour
         }
     }
 
-    public void StopDialogue()
+    public void StopDialogue(string line)
     {
 
     }
