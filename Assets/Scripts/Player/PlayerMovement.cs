@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravity = -30f;
     [SerializeField] private float jumpHeight = 3.5f;
 
-    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private LayerMask floorLayer;
 
 
     private CharacterController controller;
@@ -29,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        isGrounded = Physics.CheckSphere(transform.TransformPoint(controller.center - Vector3.up * (controller.height / 2)), 0.1f, ~playerLayer);
+        isGrounded = Physics.CheckSphere(transform.TransformPoint(controller.center - Vector3.up * (controller.height / 2)), 0.1f, floorLayer);
 
         if(isGrounded )
         {

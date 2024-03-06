@@ -2,101 +2,71 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NarratorScript : MonoBehaviour
 {
     public static NarratorScript instance;
 
     [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private GameObject backgroundImage;
     private AudioSource sourceRef;
-    private int dialogueIndex;
-    private float delay, typingSpeed;
+    private int index;
+    private Dialogue dialoguesref;
     List<string> messages = new List<string>();
-
-    private Dialogue[] dialoguesref;
     private void Start()
     {
         instance = this;
-
         sourceRef = GetComponent<AudioSource>();
     }
 
-    public void Dialogue(Dialogue[] _dialogue)
+    public void Dialogue(Dialogue _dialogue)
     {
-        dialogueIndex = 0;
+        StopAllCoroutines();
+
+        index = 0;
         dialoguesref = _dialogue;
+        messages.Clear();
+        sourceRef.Stop();
 
         switch (PlayerPrefs.GetInt("language"))
         {
-            default:
-                for (int i = 0; i < dialoguesref.Length; i++)
-                {
-                    messages.Add(dialoguesref[i].dialogueEN);
-                }
-                break;
-
-
             case 0: //anglais
-                for (int i = 0; i < dialoguesref.Length; i++)
+                for (int i = 0; i < dialoguesref.dialogueEN.Length; i++)
                 {
-                    messages.Add(dialoguesref[i].dialogueEN);
+                    messages.Add(dialoguesref.dialogueEN[i].text);
                 }
                 break;
 
             case 1: //francais
-                for (int i = 0; i < dialoguesref.Length; i++)
+                for (int i = 0; i < dialoguesref.dialogueFR.Length; i++)
                 {
-                    messages.Add(dialoguesref[i].dialogueFR);
+                    messages.Add(dialoguesref.dialogueFR[i].text);
                 }
                 break;
         }
+
+        StartCoroutine(ShowDialogue());
     }
 
-    private void Update()
+    private IEnumerator ShowDialogue()
     {
-        if(dialoguesref != null)
+        sourceRef.clip = dialoguesref.voice;
+        sourceRef.Play();
+        while (index < messages.Count)
         {
-            if (!sourceRef.isPlaying && dialogueIndex <= messages.Count - 1)
-            {
-                if (delay < dialoguesref[dialogueIndex].delay)
-                {
-                    delay += Time.deltaTime;
-                }
-                else
-                {
-                    typingSpeed = dialoguesref[dialogueIndex].voice.length / messages[dialogueIndex].Length;
-                    print(messages[dialogueIndex]);
-                    delay = 0;
+            backgroundImage.GetComponent<Image>().color = new Vector4(0, 0, 0, 0.3f);
+            text.text = messages[index];
 
-                    StartCoroutine(DisplayDialogue(messages[dialogueIndex]));
-                    sourceRef.clip = dialoguesref[dialogueIndex].voice;
-                    sourceRef.Play();
-                    dialogueIndex++;
-                }
 
-            }
-            else if (dialogueIndex > messages.Count - 1)
-            {
-                dialoguesref = null;
-                dialogueIndex = 0;
-            }
+            float currentDuration = dialoguesref.dialogueEN[index].duration;
+
+            yield return new WaitForSeconds(currentDuration);
+
+            index++;
         }
-        
-    }
 
-    private IEnumerator DisplayDialogue(string line)
-    {
         text.text = "";
-
-        foreach(char letter in line.ToCharArray())
-        {
-            text.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
-        }
-    }
-
-    public void StopDialogue(string line)
-    {
-
+        backgroundImage.GetComponent<Image>().color = new Vector4(0, 0, 0, 0);
     }
 }

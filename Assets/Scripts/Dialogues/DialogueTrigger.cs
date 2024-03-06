@@ -3,7 +3,7 @@ using UnityEngine;
 public class DialogueTrigger : MonoBehaviour
 {
     [Header("Dialogues")]
-    [SerializeField] Dialogue[] dialogue;
+    [SerializeField] Dialogue dialogue;
 
 
     [Header("Exit data")]
@@ -30,26 +30,4 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if(inBoxDialogue)
-        {
-            for(int i = 0; i < exitTextBasedOnDuration.Length; i++) 
-            { 
-                if(delay > duration[i])
-                {
-                    break;
-                }
-                else
-                {
-                    if(i > 0)
-                    {
-                        NarratorScript.instance.StopDialogue(exitTextBasedOnDuration[i - 1]);
-                    }
-                   
-                }
-            }
-            
-        }
-    }
 }
