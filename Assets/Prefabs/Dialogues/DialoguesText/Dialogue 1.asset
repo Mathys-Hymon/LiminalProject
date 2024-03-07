@@ -13,13 +13,11 @@ MonoBehaviour:
   m_Name: Dialogue 1
   m_EditorClassIdentifier: 
   dialogueEN:
-  - text: Just so you know, I'l be taking a shot
-    duration: 3
-  - text: 'every time you die, please try to '
-    duration: 3
+  - text: Just so you know, I'll be taking a shot, every time you die, please try
+      to keep me out of the hospital
+    duration: 0
   dialogueFR:
-  - text: Just so you know, I'l be taking a shot
-    duration: 3
-  - text: 'every time you die, please try to '
-    duration: 3
+  - text: Just so you know, I'll be taking a shot, every time you die, please try
+      to keep me out of the hospital
+    duration: 0
   voice: {fileID: 8300000, guid: 98f3acc49f9c5154baba9d64883cbdb5, type: 3}

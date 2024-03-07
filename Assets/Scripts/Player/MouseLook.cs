@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.Windows;
 
 public class MouseLook : MonoBehaviour
@@ -19,12 +20,12 @@ public class MouseLook : MonoBehaviour
         instance = this;
     }
 
-    public void CanInteract(bool canInteract)
+    public void Interact()
     {
 
     }
 
-    public void ReceiveInput (Vector2 mouseInput)
+    public void ReceiveInput(Vector2 mouseInput)
     {
         input = mouseInput * sensitivity;
     }
@@ -37,6 +38,6 @@ public class MouseLook : MonoBehaviour
         var VerticalRot = Quaternion.AngleAxis(xRotation, Vector3.right);
         transform.localRotation = VerticalRot;
 
-        PlayerMovement.instance.transform.Rotate((Vector3.up * (input.x/ 10) * sensitivity));
+        PlayerMovement.instance.transform.Rotate((Vector3.up * (input.x / 10) * sensitivity));
     }
 }

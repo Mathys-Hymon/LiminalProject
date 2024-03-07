@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b174fc0d9aacc34469950be0794e11cb, type: 3}
   m_Name: Dialogue 2
   m_EditorClassIdentifier: 
-  dialogueEN: Can anyone truely die ?  In real life I mean
-  dialogueFR: Can anyone truely die ?  In real life I mean
+  dialogueEN:
+  - text: can anyone truely die ? In real life I mean, I.. Wait.... Ok yes I've answered
+      my own question
+    duration: 0
+  dialogueFR: []
   voice: {fileID: 8300000, guid: 36716b87d9ce6364b89107152f5cb306, type: 3}
-  delay: 2
