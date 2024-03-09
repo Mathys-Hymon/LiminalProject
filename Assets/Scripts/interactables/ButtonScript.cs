@@ -6,6 +6,6 @@ public class ButtonScript : MonoBehaviour, IInteractable
     public string InteractionPrompt => _prompt;
     public void Interact()
     {
-        print("click");
+        print("click"); 
     }
 }
