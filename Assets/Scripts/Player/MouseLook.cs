@@ -9,15 +9,16 @@ public class MouseLook : MonoBehaviour
     [SerializeField] private float sensitivity = 10f, xClamp = 85f;
     private float xRotation;
     private Vector2 input;
+    private bool interact;
 
     private void Start()
     {
         instance = this;
     }
 
-    public void Interact()
+    public void Interact(bool _interact)
     {
-        print("interact");
+        interact = _interact;
     }
 
     public void ReceiveInput(Vector2 mouseInput)
@@ -27,7 +28,7 @@ public class MouseLook : MonoBehaviour
 
     private void Update()
     {
-        Ray ray = new Ray(transform.position + transform.forward, transform.forward);
+        Ray ray = new Ray(transform.position + (transform.forward/3), transform.forward);
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, 2.5f))
@@ -36,6 +37,11 @@ public class MouseLook : MonoBehaviour
             if (interactableObject != null)
             {
                 PlayerHUDScript.instance.SetCrosshairVisible(true);
+                if(interact)
+                {
+                    interact = false;
+                    interactableObject.Interact();
+                }
             }
             else
             {
