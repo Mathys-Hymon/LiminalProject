@@ -11,5 +11,6 @@ public class Dialogue : ScriptableObject
     }
     public dialogue[] dialogueEN;
     public dialogue[] dialogueFR;
+    public bool playerCanInteract;
     public AudioClip voice;
 }

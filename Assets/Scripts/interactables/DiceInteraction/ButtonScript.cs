@@ -21,7 +21,10 @@ public class ButtonScript : MonoBehaviour, IInteractable
     }
     public void GetDiceResult(int result)
     {
-       print(result);
+      if(result >= 4)
+        {
+            print("bienvenue");
+        }
     }
 
 

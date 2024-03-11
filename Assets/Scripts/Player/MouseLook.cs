@@ -34,7 +34,7 @@ public class MouseLook : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 2.5f))
         {
             IInteractable interactableObject = hit.collider.GetComponent<IInteractable>();
-            if (interactableObject != null)
+            if (interactableObject != null && interactableObject.CanInteract() == true)
             {
                 PlayerHUDScript.instance.SetCrosshairVisible(true);
                 if(interact)

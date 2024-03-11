@@ -58,14 +58,14 @@ public class PlayerHUDScript : MonoBehaviour
 
         while (rollAnim < maxRollAnim)
         {
-            if(rollAnim <= maxRollAnim-(maxRollAnim/3))
+            if(rollAnim <= maxRollAnim - (maxRollAnim / 3))
             {
                 dice.transform.rotation = Quaternion.Slerp(dice.transform.rotation, dice.transform.rotation * Quaternion.Euler(Random.Range(0, 200), 0, Random.Range(-200, 0)), 30 * Time.deltaTime);
             }
 
             else
             {
-                dice.transform.rotation = Quaternion.Slerp(dice.transform.rotation, Quaternion.Euler(0,0,0), 30*Time.deltaTime);
+                dice.transform.LookAt(MouseLook.instance.transform.position);
             }
 
 
