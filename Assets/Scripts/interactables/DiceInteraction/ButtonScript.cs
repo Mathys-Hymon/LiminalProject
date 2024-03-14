@@ -26,7 +26,4 @@ public class ButtonScript : MonoBehaviour, IInteractable
             print("bienvenue");
         }
     }
-
-
-
 }

@@ -102,6 +102,7 @@ public class PlayerHUDScript : MonoBehaviour
         {
             diceText.alpha = Mathf.Lerp(diceText.alpha, 1f, 3 * Time.deltaTime);
             crosshair.transform.localScale = Vector3.Lerp(crosshair.transform.localScale, new Vector3(0.5f, 0.5f, 0.5f), 6 * Time.deltaTime);
+            crosshair.color = Vector4.Lerp(crosshair.color, new Vector4(1, 1, 1, 1), 20 * Time.deltaTime);
             dice.SetActive(true);
         }
         else
