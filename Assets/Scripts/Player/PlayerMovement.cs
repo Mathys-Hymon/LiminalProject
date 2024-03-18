@@ -9,74 +9,55 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed = 11f;
     [SerializeField] private float floorFriction = 1f;
     [SerializeField] private float airControl = 1f;
-    [SerializeField] private float gravity = -30f;
     [SerializeField] private float jumpHeight = 3.5f;
 
     [SerializeField] private LayerMask floorLayer;
 
 
-    private CharacterController controller;
+    private Rigidbody rb;
     private Vector2 horizontalInput;
-    private Vector3 verticalVelocity = Vector3.zero, horizontalVelocity = Vector3.zero;
     private bool isGrounded, isJumping;
 
     private void Start()
     {
         instance = this;
-        controller = GetComponent<CharacterController>();
         PlayerPrefs.SetInt("language", 0);
-
+        rb = GetComponent<Rigidbody>();
     }
     private void Update()
     {
-        isGrounded = Physics.CheckSphere(transform.TransformPoint(controller.center - Vector3.up * (controller.height / 2)), 0.1f, floorLayer);
+        isGrounded = Physics.CheckSphere(transform.position - Vector3.up, 0.1f, floorLayer);
 
-        if(isGrounded )
-        {
-            verticalVelocity.y = 0;
-        }
-        else
-        {
-            verticalVelocity.y += gravity * Time.deltaTime;
-        }
         if(isJumping)
         {
             if(isGrounded)
             {
-                verticalVelocity.y = Mathf.Sqrt(-2f * jumpHeight * gravity);
+               rb.AddForce(Vector3.up * jumpHeight, ForceMode.Impulse);
             }
             isJumping = false;
         }
-
-       if (horizontalInput.magnitude != 0) 
-        {
-            if(isGrounded)
-            {
-                horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity += (transform.right * horizontalInput.x + transform.forward * horizontalInput.y) * speed * Time.deltaTime * floorFriction*2, speed);
-            }
-            else
-            {
-                horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity += (transform.right * horizontalInput.x + transform.forward * horizontalInput.y) * speed * Time.deltaTime * airControl, speed);
-            }
-          
-        }
-       else
-        {
-            if(isGrounded)
-            {
-                if (horizontalVelocity.magnitude != 0)
-                {
-                    horizontalVelocity *= 1 - (Time.deltaTime * (floorFriction * 2));
-                }
-            }
-            else
-            {
-                horizontalVelocity *= 1 - (Time.deltaTime * airControl);
-            }
-        }
-        
-        controller.Move((horizontalVelocity + verticalVelocity) * Time.deltaTime);
     }
+
+    private void FixedUpdate()
+    {
+        float friction;
+
+        if(isGrounded)
+        {
+            friction = 1;
+            rb.drag = 8;
+        }
+        else
+        {
+            friction = 0.2f;
+            rb.drag = 0.5f * airControl;
+        }
+        Vector3 targetVelocity = transform.TransformDirection(new Vector3(horizontalInput.x, 0, horizontalInput.y)) * speed;
+
+        rb.velocity = new Vector3(Mathf.Clamp(rb.velocity.x, -10, 10), Mathf.Clamp(rb.velocity.y, -10, 10), Mathf.Clamp(rb.velocity.z, -10, 10));
+        rb.AddForce(new Vector3(targetVelocity.x, 0, targetVelocity.z) * Time.fixedDeltaTime * 500 * friction, ForceMode.Force);
+    }
+
     public void ReceiveInput (Vector2 _horizontalInput)
     {
         horizontalInput = _horizontalInput;
@@ -84,5 +65,11 @@ public class PlayerMovement : MonoBehaviour
     public void OnJumpPressed()
     {
         isJumping = true; 
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position - Vector3.up, 0.1f);
     }
 }
