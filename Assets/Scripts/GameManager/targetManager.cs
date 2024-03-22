@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class targetManager : MonoBehaviour
@@ -16,15 +13,9 @@ public class targetManager : MonoBehaviour
 
     }
 
-    public bool IsOnCamera(GameObject target)
+    public bool VisibleFromCamera(GameObject target)
     {
-        if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(cam), target.GetComponent<Collider>().bounds))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        Plane[] frustumPlanes = GeometryUtility.CalculateFrustumPlanes(cam);
+        return GeometryUtility.TestPlanesAABB(frustumPlanes, target.GetComponent<Collider>().bounds);
     }
 }

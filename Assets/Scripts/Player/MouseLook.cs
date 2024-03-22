@@ -6,7 +6,7 @@ public class MouseLook : MonoBehaviour
 
 
     [SerializeField] private float sensitivity = 10f, xClamp = 85f;
-    private float xRotation;
+    private Vector2 rotation;
     private Vector2 input;
     private bool interact;
 
@@ -24,7 +24,6 @@ public class MouseLook : MonoBehaviour
     {
         input = mouseInput * sensitivity;
     }
-
     private void Update()
     {
         Ray ray = new Ray(transform.position + (transform.forward/3), transform.forward);
@@ -52,11 +51,8 @@ public class MouseLook : MonoBehaviour
             PlayerHUDScript.instance.SetCrosshairVisible(false);
         }
 
-        xRotation -= ((input.y / 10) * sensitivity);
-        xRotation = Mathf.Clamp(xRotation, -xClamp, xClamp);
-        var VerticalRot = Quaternion.AngleAxis(xRotation, Vector3.right);
-        transform.localRotation = VerticalRot;
-
-        PlayerMovement.instance.transform.Rotate((Vector3.up * (input.x / 10) * sensitivity));
+        rotation -= new Vector2((input.y * sensitivity * Time.deltaTime), (input.x * sensitivity * Time.deltaTime));
+        rotation.x = Mathf.Clamp(rotation.x, -xClamp, xClamp);
+        transform.localRotation = Quaternion.Euler(rotation.x, -rotation.y, 0);
     }
 }

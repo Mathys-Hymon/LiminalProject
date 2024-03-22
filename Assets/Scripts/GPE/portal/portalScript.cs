@@ -1,20 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using RenderPipeline = UnityEngine.Rendering.RenderPipelineManager;
+
 
 public class portalScript : MonoBehaviour
 {
     [SerializeField] private portalScript otherPortal;
+    [SerializeField] private float DistanceToRender;
 
     private GameObject cam;
     private GameObject otherCam;
 
     private RenderTexture tempTexture;
 
-    private bool playerInZone;
+    private bool playerOverlapping;
 
 
     public GameObject GetCam()
@@ -33,42 +30,73 @@ public class portalScript : MonoBehaviour
         tempTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
     }
 
-    private void LateUpdate()
+    private void Update()
     {
-        if (playerInZone)
+        if (Vector3.Distance(gameObject.transform.position, PlayerMovement.instance.transform.position) < DistanceToRender && targetManager.instance.VisibleFromCamera(transform.GetChild(1).gameObject))
         {
-            Vector3 cameraOffset = Camera.main.transform.position - cam.transform.position;
+            Vector3 cameraOffset = Camera.main.transform.position - transform.position;
             otherCam.GetComponent<Camera>().targetTexture = tempTexture;
             otherCam.transform.localPosition = cameraOffset;
-            otherCam.transform.localRotation = PlayerMovement.instance.gameObject.transform.localRotation * Quaternion.Euler(Vector3.up) * MouseLook.instance.gameObject.transform.localRotation;
-
-            cam.transform.localPosition = Vector3.zero;
+            otherCam.transform.localRotation = Quaternion.LookRotation(MouseLook.instance.gameObject.transform.forward, Vector3.up);
             transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material.mainTexture = tempTexture;
         }
+        else
+        {
+            otherCam.transform.localRotation = Quaternion.identity;
+            otherCam.transform.localPosition = Vector3.zero;
+        }
+       
+        //if (playerOverlapping && Vector3.Dot(-PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity.normalized, transform.forward.normalized) > 0)
+        //{
+        //    Vector3 offset = PlayerMovement.instance.transform.position - transform.position;
+        //    float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.transform.rotation);
+        //    rotationDiff += 180;
+        //    PlayerMovement.instance.transform.Rotate(Vector3.up, rotationDiff);
+        //    PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity = Vector3.Scale(PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity, otherPortal.transform.forward);
+
+        //    Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * offset;
+        //    PlayerMovement.instance.transform.position = otherPortal.transform.position + positionOffset;
+
+        //}
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        Vector3 offset = PlayerMovement.instance.transform.position - transform.position;
-        PlayerMovement.instance.transform.position = otherPortal.transform.position + offset;
-        PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity = Vector3.Scale(PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity, otherPortal.transform.forward);
-        PlayerMovement.instance.transform.Rotate(Vector3.up);
-        MouseLook.instance.transform.rotation = otherCam.transform.rotation;
-    }
+
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject == PlayerMovement.instance.gameObject)
+        if(other.gameObject.GetComponent<MouseLook>() != null)
         {
-            playerInZone = true;
-        }
+            playerOverlapping = true;
 
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.GetComponent<MouseLook>() != null && Vector3.Dot(-PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity.normalized, transform.forward.normalized) > 0)
+        {
+            Vector3 offset = PlayerMovement.instance.transform.position - transform.position;
+            float rotationDiff = -Quaternion.Angle(transform.rotation, otherPortal.transform.rotation);
+            rotationDiff += 180;
+            PlayerMovement.instance.transform.Rotate(Vector3.up, rotationDiff);
+            PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity = Vector3.Scale(PlayerMovement.instance.gameObject.GetComponent<Rigidbody>().velocity, otherPortal.transform.forward);
+
+            Vector3 positionOffset = Quaternion.Euler(0f, rotationDiff, 0f) * offset;
+            PlayerMovement.instance.transform.position = otherPortal.transform.position + positionOffset;
+
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == PlayerMovement.instance.gameObject)
+        if (other.gameObject.GetComponent<MouseLook>() != null)
         {
-            playerInZone = false;
+            playerOverlapping = false;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, DistanceToRender);
     }
 }

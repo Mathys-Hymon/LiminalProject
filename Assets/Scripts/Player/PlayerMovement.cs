@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     public static PlayerMovement instance;
 
     [SerializeField] private float speed = 11f;
-    [SerializeField] private float floorFriction = 1f;
     [SerializeField] private float airControl = 1f;
     [SerializeField] private float jumpHeight = 3.5f;
 
@@ -42,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float friction;
 
-        if(isGrounded)
+        if (isGrounded)
         {
             friction = 1;
             rb.drag = 8;
@@ -52,24 +51,26 @@ public class PlayerMovement : MonoBehaviour
             friction = 0.2f;
             rb.drag = 0.5f * airControl;
         }
-        Vector3 targetVelocity = transform.TransformDirection(new Vector3(horizontalInput.x, 0, horizontalInput.y)) * speed;
+
+        // Obtenir la direction de la caméra
+        Vector3 cameraForward = Camera.main.transform.forward;
+        cameraForward.y = 0; // Ignorer la composante verticale
+        cameraForward = cameraForward.normalized;
+
+        // Calculer la nouvelle direction de déplacement
+        Vector3 targetVelocity = cameraForward * horizontalInput.y + Camera.main.transform.right * horizontalInput.x;
+        targetVelocity = targetVelocity.normalized * speed;
 
         rb.velocity = new Vector3(Mathf.Clamp(rb.velocity.x, -10, 10), Mathf.Clamp(rb.velocity.y, -10, 10), Mathf.Clamp(rb.velocity.z, -10, 10));
         rb.AddForce(new Vector3(targetVelocity.x, 0, targetVelocity.z) * Time.fixedDeltaTime * 500 * friction, ForceMode.Force);
     }
 
-    public void ReceiveInput (Vector2 _horizontalInput)
+    public void ReceiveInput(Vector2 _horizontalInput)
     {
         horizontalInput = _horizontalInput;
     }
     public void OnJumpPressed()
     {
-        isJumping = true; 
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position - Vector3.up, 0.1f);
+        isJumping = true;
     }
 }
